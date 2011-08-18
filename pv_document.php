@@ -1,5 +1,4 @@
 <?php
-
 /*
   Plugin Name: Document
   Plugin URI: http://todo.com
@@ -59,5 +58,27 @@ function format_content($content) {
   if ($post->post_type != 'document')
     return $content;
   
+  $attachments = get_post_attachments($post->ID);
+  
+  if (count($attachments) < 1) {    
+      $content .= '<p>There are no documents to download.</p>';
+      return $content;
+  }
+  
+  foreach ($attachments as $attachment) {
+      
+    $content .= '<p>$attachment->post_name</p>';
+   
+  }
+  
   return $content;
+}
+
+
+function get_post_attachments($post_id) {
+  return get_posts(array(
+      'post_type' => 'attachment',
+      'post_parent' => $post_id,
+      'numberposts' => -1
+      ));    
 }
