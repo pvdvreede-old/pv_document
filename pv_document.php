@@ -11,6 +11,7 @@
 
 add_action('init', 'register_document_type');
 add_action('add_meta_boxes', 'add_document_meta_box');
+add_action('save_post', 'save_document_data');
 
 add_filter('the_content', 'format_content');
 
@@ -71,6 +72,32 @@ function render_document_meta_box($post) {
   $output .= '</select>';
   
   echo $output;
+}
+
+function save_document_data($post_id) {
+    
+  // verify if this is an auto save routine. 
+  // If it is our form has not been submitted, so we dont want to do anything
+  if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
+      return;  
+      
+  if ( !wp_verify_nonce( $_POST['pv_document_noncename'], plugin_basename( __FILE__ ) ) )
+      return;
+  
+  // only operate when its a document type
+  if ($_POST['post_type'] != 'document')
+      return;
+      
+  if ( !current_user_can( 'edit_post', $post_id ) )
+      return;
+        
+  $attachment_id = $_POST['document_attachment'];
+  
+  $attachment = array();
+  $attachment['ID'] = $attachment_id;
+  $attachment['parent_post'] = $post_id;
+  
+  wp_update_post($attachment);
 }
 
 function format_content($content) {
