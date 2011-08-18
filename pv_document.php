@@ -13,6 +13,9 @@
 add_action('init', 'register_document_type');
 
 
+add_filter('the_content', 'format_content');
+
+
 /**
  * Function to create the document post type and its corresponding
  * categories.
@@ -50,3 +53,11 @@ function register_document_type() {
 }
 
 
+function format_content($content) {
+  global $post;
+  
+  if ($post->post_type != 'document')
+    return $content;
+  
+  return $content;
+}
