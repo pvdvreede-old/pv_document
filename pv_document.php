@@ -56,11 +56,9 @@ function add_document_meta_box() {
     add_meta_box('pv_document_items', 'Add Documents', 'render_document_meta_box', 'document');
 }
 
-
 function render_document_meta_box($post) {
   
-  // TODO: This should be all attachments, possibly filtered by type
-  $attachments = get_post_attachments($post->ID);
+  $attachments = get_post_attachments();
   
   // Use nonce for verification
   wp_nonce_field( plugin_basename( __FILE__ ), 'pv_document_noncename' );
@@ -123,10 +121,15 @@ function format_content($content) {
 }
 
 
-function get_post_attachments($post_id) {
-  return get_posts(array(
+function get_post_attachments($post_id = null) {
+  
+  $args = array(
       'post_type' => 'attachment',
-      'post_parent' => $post_id,
       'numberposts' => -1
-      ));    
+      );
+      
+  if ($post_id != null)
+    $args['post_parent'] = $post_id;
+  
+  return get_posts($args);    
 }
