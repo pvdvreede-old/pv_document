@@ -40,7 +40,7 @@ function register_document_type() {
     )
     );   
     
-    register_taxonomy('DocumentCategories', 'document', array(
+    register_taxonomy('doc_categories', 'document', array(
         'labels' => array(
             'label' => 'Categories',
             'labels' => array(
