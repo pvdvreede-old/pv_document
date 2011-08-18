@@ -66,7 +66,7 @@ function render_document_meta_box($post) {
   
   $output = '<select name="document_attachment">';
   foreach ($attachments as $attachment) {
-      $ouput .= '<option value="'.$attachment->ID.'">'.$attachment->post_name'.</option>';
+      $ouput .= '<option value="'.$attachment->ID.'">'.$attachment->post_name.'</option>';
   }
   $output .= '</select>';
   
