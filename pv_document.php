@@ -37,20 +37,10 @@ function register_document_type() {
             'not_found_in_trash' => __('Nothing found in Trash'),
             'parent_item_colon' => ''
         ),
-        'public' => true
-    )
-    );   
+        'public' => true,
+        'taxonomies' => array('category', 'post_tag')
+    ));   
     
-    register_taxonomy('doc_categories', 'document', array(
-        'labels' => array(
-            'label' => 'Categories',
-            'labels' => array(
-                'singular_name' => 'Categories'
-            ),
-            'public' => true
-            
-        )
-    ));
 }
 
 function add_document_meta_box() {   
