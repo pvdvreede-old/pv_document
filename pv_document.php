@@ -1,4 +1,5 @@
 <?php
+
 /*
   Plugin Name: Document
   Plugin URI: http://todo.com
@@ -15,7 +16,6 @@ add_action('save_post', 'save_document_data');
 
 add_filter('the_content', 'format_content');
 add_filter('post_mime_types', 'add_mime_type_filter');
-
 
 /**
  * Function to create the document post type and its corresponding
@@ -40,102 +40,103 @@ function register_document_type() {
         'public' => true,
         'taxonomies' => array('category', 'post_tag'),
         'menu_position' => 5
-    ));   
-    
+    ));
 }
 
-function add_document_meta_box() {   
-    add_meta_box('pv_document_items', 'Add Documents', 'render_document_meta_box', 'document');
+function add_document_meta_box() {
+    add_meta_box('pv_document_items', 'Add Attachment', 'render_document_meta_box', 'document');
 }
 
 function render_document_meta_box($post) {
-  
-  $attachments = get_post_attachments();
-  
-  // Use nonce for verification
-  wp_nonce_field( plugin_basename( __FILE__ ), 'pv_document_noncename' );
-  
-  $output = '<select name="document_attachment">';
-  $output .= '<option value="0">Select an attachment to link...</option>';
-  foreach ($attachments as $attachment) {
-      $ouput .= '<option value="'.$attachment->ID.'">'.$attachment->post_name.'</option>';
-  }
-  $output .= '</select>';
-  
-  echo $output;
+
+    $attachments = get_post_attachments();
+      
+    // Use nonce for verification
+    wp_nonce_field(plugin_basename(__FILE__), 'pv_document_noncename');
+
+    $output = '<select name="document_attachment">';
+    $output .= '<option value="0">Select an attachment to link...</option>';
+    foreach ($attachments as $attachment) {
+        $output .= '<option value="' . $attachment->ID . '">' . $attachment->post_name . '</option>';
+    }
+
+    $output .= '</select>';
+
+    echo $output;
 }
 
 function save_document_data($post_id) {
-    
-  // verify if this is an auto save routine. 
-  // If it is our form has not been submitted, so we dont want to do anything
-  if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
-      return;  
-      
-  if ( !wp_verify_nonce( $_POST['pv_document_noncename'], plugin_basename( __FILE__ ) ) )
-      return;
-  
-  // only operate when its a document type
-  if ($_POST['post_type'] != 'document')
-      return;
-      
-  if ( !current_user_can( 'edit_post', $post_id ) )
-      return;
-        
-  $attachment_id = $_POST['document_attachment'];
-  
-  // If no attachment was selected then exit and let the document save
-  if ($attachment_id == '0')
-      return;
-  
-  $attachment = array();
-  $attachment['ID'] = $attachment_id;
-  $attachment['parent_post'] = $post_id;
-  
-  wp_update_post($attachment);
-  
-  return;
+
+    // verify if this is an auto save routine. 
+    // If it is our form has not been submitted, so we dont want to do anything
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+        return;
+
+    if (!wp_verify_nonce($_POST['pv_document_noncename'], plugin_basename(__FILE__)))
+        return;
+
+    // only operate when its a document type
+    if ($_POST['post_type'] != 'document')
+        return;
+
+    if (!current_user_can('edit_post', $post_id))
+        return;
+
+    $attachment_id = $_POST['document_attachment'];
+
+    // If no attachment was selected then exit and let the document save
+    if ($attachment_id == '0')
+        return;
+
+    $attachment = array();
+    $attachment['ID'] = $attachment_id;
+    $attachment['parent_post'] = $post_id;
+
+    wp_update_post($attachment);
+
+    return;
 }
 
 function format_content($content) {
-  global $post;
-  
-  if ($post->post_type != 'document')
+    global $post;
+
+    if ($post->post_type != 'document')
+        return $content;
+
+    // only render the download links on a single page view - not in the feed.
+    if (!is_single())
+        return $content;
+
+    $attachments = get_post_attachments($post->ID);
+
+    if (count($attachments) < 1) {
+        $content .= '<p>There are no documents to download.</p>';
+        return $content;
+    }
+
+    foreach ($attachments as $attachment) {
+        $content .= '<p>' . $attachment->post_name . '</p>';
+    }
+
     return $content;
-  
-  // only render the download links on a single page view - not in the feed.
-  if (!is_single())
-    return $content;
-  
-  $attachments = get_post_attachments($post->ID);
-  
-  if (count($attachments) < 1) {    
-      $content .= '<p>There are no documents to download.</p>';
-      return $content;
-  }
-  
-  foreach ($attachments as $attachment) {     
-    $content .= '<p>'.$attachment->post_name.'</p>';  
-  }
-  
-  return $content;
 }
 
 function add_mime_type_filter($post_mime_types) {
-  $post_mime_types['application/pdf'] = array('PDF', 'Manage PDF', 'PDF (%s)');
-  // TODO: Add more mime types for other doc types eg, Word, spreadsheet
-  
-  return $post_mime_types;
+    $post_mime_types['application/pdf'] = array('PDF', 'Manage PDF', 'PDF (%s)');
+    // TODO: Add more mime types for other doc types eg, Word, spreadsheet
+
+    return $post_mime_types;
 }
 
-function get_post_attachments($post_id = null) { 
-  $args = array(
-      'post_type' => 'attachment',
-      'numberposts' => -1
-      );
-      
-  if ($post_id != null)
-    $args['post_parent'] = $post_id;
-  
-  return get_posts($args);    
+function get_post_attachments($post_id = null) {
+    $args = array(
+        'post_type' => 'attachment',
+        'numberposts' => -1,
+        'post_status' => null
+    );
+
+    if ($post_id != null)
+        $args['post_parent'] = $post_id;
+
+    return get_posts($args);
 }
