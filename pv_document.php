@@ -56,6 +56,7 @@ function render_document_meta_box($post) {
   wp_nonce_field( plugin_basename( __FILE__ ), 'pv_document_noncename' );
   
   $output = '<select name="document_attachment">';
+  $output .= '<option value="0">Select an attachment to link...</option>';
   foreach ($attachments as $attachment) {
       $ouput .= '<option value="'.$attachment->ID.'">'.$attachment->post_name.'</option>';
   }
@@ -83,11 +84,17 @@ function save_document_data($post_id) {
         
   $attachment_id = $_POST['document_attachment'];
   
+  // If no attachment was selected then exit and let the document save
+  if ($attachment_id == '0')
+      return;
+  
   $attachment = array();
   $attachment['ID'] = $attachment_id;
   $attachment['parent_post'] = $post_id;
   
   wp_update_post($attachment);
+  
+  return;
 }
 
 function format_content($content) {
@@ -107,10 +114,8 @@ function format_content($content) {
       return $content;
   }
   
-  foreach ($attachments as $attachment) {
-      
-    $content .= '<p>'.$attachment->post_name.'</p>';
-   
+  foreach ($attachments as $attachment) {     
+    $content .= '<p>'.$attachment->post_name.'</p>';  
   }
   
   return $content;
