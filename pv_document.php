@@ -98,7 +98,7 @@ function save_document_data($post_id) {
 
     $attachment = array();
     $attachment['ID'] = $attachment_id;
-    $attachment['parent_post'] = $post_id;
+    $attachment['post_parent'] = $post_id;
  
     wp_update_post($attachment);
 }
