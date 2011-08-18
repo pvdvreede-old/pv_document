@@ -49,6 +49,11 @@ function add_document_meta_box() {
 
 function render_document_meta_box($post) {
 
+    if ($post->post_type != 'document')
+            return;
+    
+    $current_attachment = get_post_attachments($post->ID);
+    
     $attachments = get_post_attachments();
       
     // Use nonce for verification
@@ -57,7 +62,10 @@ function render_document_meta_box($post) {
     $output = '<select name="document_attachment">';
     $output .= '<option value="0">Select an attachment to link...</option>';
     foreach ($attachments as $attachment) {
-        $output .= '<option value="' . $attachment->ID . '">' . $attachment->post_name . '</option>';
+        if (count($current_attachment) < 1 || $current_attachment[0]->ID != $attachment->ID)
+            $output .= '<option value="' . $attachment->ID . '">' . $attachment->post_name . '</option>';
+        else
+            $output .= '<option value="' . $attachment->ID . '" selected>' . $attachment->post_name . '</option>';
     }
 
     $output .= '</select>';
@@ -91,10 +99,8 @@ function save_document_data($post_id) {
     $attachment = array();
     $attachment['ID'] = $attachment_id;
     $attachment['parent_post'] = $post_id;
-
+ 
     wp_update_post($attachment);
-
-    return;
 }
 
 function format_content($content) {
