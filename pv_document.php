@@ -44,23 +44,23 @@ function register_document_type() {
 }
 
 function add_document_meta_box() {
-    add_meta_box('pv_document_items', 'Add Attachment', 'render_document_meta_box', 'document');
+    add_meta_box('pv_document_items', 'Add Attachments', 'render_document_meta_box', 'document');
 }
 
 function render_document_meta_box($post) {
 
     if ($post->post_type != 'document')
-            return;
-    
+        return;
+
     $current_attachment = get_post_attachments($post->ID);
-    
+
     $attachments = get_post_attachments();
-      
+
     // Use nonce for verification
     wp_nonce_field(plugin_basename(__FILE__), 'pv_document_noncename');
 
-    $output = '<select name="document_attachment">';
-    $output .= '<option value="0">Select an attachment to link...</option>';
+    $output = '<select size="4" multiple name="document_attachment[]">';
+    $output .= '<option value="0">None</option>';
     foreach ($attachments as $attachment) {
         if (count($current_attachment) < 1 || $current_attachment[0]->ID != $attachment->ID)
             $output .= '<option value="' . $attachment->ID . '">' . $attachment->post_name . '</option>';
@@ -90,17 +90,15 @@ function save_document_data($post_id) {
     if (!current_user_can('edit_post', $post_id))
         return;
 
-    $attachment_id = $_POST['document_attachment'];
+    $attachment_ids = $_POST['document_attachment'];
 
-    // If no attachment was selected then exit and let the document save
-    if ($attachment_id == '0')
-        return;
+    foreach ($attachment_ids as $id) {
+        $attachment = array();
+        $attachment['ID'] = $id;
+        $attachment['post_parent'] = $post_id;
 
-    $attachment = array();
-    $attachment['ID'] = $attachment_id;
-    $attachment['post_parent'] = $post_id;
- 
-    wp_update_post($attachment);
+        wp_update_post($attachment);
+    }
 }
 
 function format_content($content) {
