@@ -10,7 +10,7 @@
  */
 
 add_action('init', 'register_document_type');
-
+add_action('add_meta_boxes', 'add_document_meta_box');
 
 add_filter('the_content', 'format_content');
 
@@ -51,6 +51,27 @@ function register_document_type() {
     ));
 }
 
+function add_document_meta_box() {   
+    add_meta_box('pv_document_items', 'Add Documents', 'render_document_meta_box', 'document');
+}
+
+
+function render_document_meta_box($post) {
+  
+  // TODO: This should be all attachments, possibly filtered by type
+  $attachments = get_post_attachments($post->ID);
+  
+  // Use nonce for verification
+  wp_nonce_field( plugin_basename( __FILE__ ), 'pv_document_noncename' );
+  
+  $output = '<select name="document_attachment">';
+  foreach ($attachments as $attachment) {
+      $ouput .= '<option value="'.$attachment->ID.'">'.$attachment->post_name'.</option>';
+  }
+  $output .= '</select>';
+  
+  echo $output;
+}
 
 function format_content($content) {
   global $post;
