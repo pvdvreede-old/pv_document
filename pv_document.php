@@ -14,6 +14,7 @@ add_action('add_meta_boxes', 'add_document_meta_box');
 add_action('save_post', 'save_document_data');
 
 add_filter('the_content', 'format_content');
+add_filter('post_mime_types', 'add_mime_type_filter');
 
 
 /**
@@ -124,6 +125,12 @@ function format_content($content) {
   return $content;
 }
 
+function add_mime_type_filter($post_mime_types) {
+  $post_mime_types['application/pdf'] = array('PDF', 'Manage PDF', 'PDF (%s)');
+  // TODO: Add more mime types for other doc types eg, Word, spreadsheet
+  
+  return $post_mime_types;
+}
 
 function get_post_attachments($post_id = null) { 
   $args = array(
