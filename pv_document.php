@@ -38,7 +38,8 @@ function register_document_type() {
             'parent_item_colon' => ''
         ),
         'public' => true,
-        'taxonomies' => array('category', 'post_tag')
+        'taxonomies' => array('category', 'post_tag'),
+        'menu_position' => 5
     ));   
     
 }
