@@ -104,6 +104,10 @@ function format_content($content) {
   if ($post->post_type != 'document')
     return $content;
   
+  // only render the download links on a single page view - not in the feed.
+  if (!is_single())
+    return $content;
+  
   $attachments = get_post_attachments($post->ID);
   
   if (count($attachments) < 1) {    
@@ -113,7 +117,7 @@ function format_content($content) {
   
   foreach ($attachments as $attachment) {
       
-    $content .= '<p>$attachment->post_name</p>';
+    $content .= '<p>'.$attachment->post_name.'</p>';
    
   }
   
@@ -121,8 +125,7 @@ function format_content($content) {
 }
 
 
-function get_post_attachments($post_id = null) {
-  
+function get_post_attachments($post_id = null) { 
   $args = array(
       'post_type' => 'attachment',
       'numberposts' => -1
