@@ -1,14 +1,14 @@
 <?php
 
 /*
-  Plugin Name: Document
-  Plugin URI: http://todo.com
-  Description: A brief description of the Plugin.
-  Version: 0.5
-  Author: Paul Van de Vreede
-  Author URI: http://www.vdvreede.net
-  License: A "Slug" license name e.g. GPL2
- */
+Plugin Name: pv_Document
+Plugin URI: http://www.vdvreede.net
+Description: Adds document post type to wordpress for a document library.
+Version: 0.5
+Author: Paul Van de Vreede
+Author URI: http://www.vdvreede.net
+License: GPL2
+*/
 
 add_action('init', 'register_document_type');
 add_action('add_meta_boxes', 'add_document_meta_box');
@@ -129,6 +129,8 @@ function format_content($content) {
 
 function add_mime_type_filter($post_mime_types) {
     $post_mime_types['application/pdf'] = array('PDF', 'Manage PDF', 'PDF (%s)');
+    $post_mime_types['application/vnd.openxmlformats-officedocument.wordprocessingml.document'] = array('Word', 'Manage Word', 'Word (%s)');
+    $post_mime_types['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'] = array('Spreadsheet', 'Manage Spreadsheet', 'Spreadsheets (%s)');
     // TODO: Add more mime types for other doc types eg, Word, spreadsheet
 
     return $post_mime_types;
