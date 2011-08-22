@@ -55,21 +55,27 @@ function render_document_meta_box($post) {
     $current_attachment = get_post_attachments($post->ID);
     
     $attachments = get_post_attachments();
-      
-    // Use nonce for verification
-    wp_nonce_field(plugin_basename(__FILE__), 'pv_document_noncename');
-
-    $output = '<select name="document_attachment">';
-    $output .= '<option value="0">Select an attachment to link...</option>';
-    foreach ($attachments as $attachment) {
-        if (count($current_attachment) < 1 || $current_attachment[0]->ID != $attachment->ID)
-            $output .= '<option value="' . $attachment->ID . '">' . $attachment->post_name . '</option>';
-        else
-            $output .= '<option value="' . $attachment->ID . '" selected>' . $attachment->post_name . '</option>';
+    
+    if (count($attachments) > 0) {   
+        // Use nonce for verification
+        wp_nonce_field(plugin_basename(__FILE__), 'pv_document_noncename');
+    
+        $output = '<select name="document_attachment">';
+        $output .= '<option value="0">Select an attachment to link...</option>';
+        foreach ($attachments as $attachment) {
+            if (count($current_attachment) < 1 || $current_attachment[0]->ID != $attachment->ID)
+                $output .= '<option value="' . $attachment->ID . '">' . $attachment->post_name . '</option>';
+            else
+                $output .= '<option value="' . $attachment->ID . '" selected>' . $attachment->post_name . '</option>';
+        }
+    
+        $output .= '</select>';
+    } else {
+        $output = '<p>There are no documents currently in the media library to attach.</p>';       
     }
-
-    $output .= '</select>';
-
+    
+    $output .= '<p>To add documents to the library <a href="/wp-admin/media-new.php">click here</a></p>';
+    
     echo $output;
 }
 
@@ -129,7 +135,10 @@ function format_content($content) {
 
 function add_mime_type_filter($post_mime_types) {
     $post_mime_types['application/pdf'] = array('PDF', 'Manage PDF', 'PDF (%s)');
+    
     $post_mime_types['application/vnd.openxmlformats-officedocument.wordprocessingml.document'] = array('Word', 'Manage Word', 'Word (%s)');
+    $post_mime_types['application/msword'] = array('Word', 'Manage Word', 'Word (%s)');
+    
     $post_mime_types['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'] = array('Spreadsheet', 'Manage Spreadsheet', 'Spreadsheets (%s)');
     // TODO: Add more mime types for other doc types eg, Word, spreadsheet
 
