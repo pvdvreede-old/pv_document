@@ -24,7 +24,7 @@ add_filter('posts_where', 'pvd_where_add_documents' );
  */
 function pvd_register_document_type() {
 
-    register_post_type('document', array(
+    register_post_type('pv_document', array(
         'labels' => array(
             'name' => 'Documents',
             'singular_name' => _x('Document', 'post type singular name'),
@@ -45,15 +45,15 @@ function pvd_register_document_type() {
 }
 
 function pvd_add_document_meta_box() {
-    add_meta_box('pv_document_items', 'Add Attachment', 'render_document_meta_box', 'document');
+    add_meta_box('pv_document_items', 'Add Attachment', 'render_document_meta_box', 'pv_document');
 }
 
 function pvd_render_document_meta_box($post) {
 
-    if ($post->post_type != 'document')
+    if ($post->post_type != 'pv_document')
             return;
     
-    $current_attachment = get_post_attachments($post->ID);
+    $current_attachment = pvd_get_post_attachments($post->ID);
     
     $attachments = pvd_get_post_attachments();
     
@@ -61,7 +61,7 @@ function pvd_render_document_meta_box($post) {
         // Use nonce for verification
         wp_nonce_field(plugin_basename(__FILE__), 'pv_document_noncename');
     
-        $output = '<select name="document_attachment">';
+        $output = '<select name="pv_document_attachment">';
         $output .= '<option value="0">Select an attachment to link...</option>';
         foreach ($attachments as $attachment) {
             if (count($current_attachment) < 1 || $current_attachment[0]->ID != $attachment->ID)
@@ -91,13 +91,13 @@ function pvd_save_document_data($post_id) {
         return;
 
     // only operate when its a document type
-    if ($_POST['post_type'] != 'document')
+    if ($_POST['post_type'] != 'pv_document')
         return;
 
     if (!current_user_can('edit_post', $post_id))
         return;
 
-    $attachment_id = $_POST['document_attachment'];
+    $attachment_id = $_POST['pv_document_attachment'];
 
     // If no attachment was selected then exit and let the document save
     if ($attachment_id == '0')
@@ -113,7 +113,7 @@ function pvd_save_document_data($post_id) {
 function pvd_format_content($content) {
     global $post;
 
-    if ($post->post_type != 'document')
+    if ($post->post_type != 'pv_document')
         return $content;
 
     // only render the download links on a single page view - not in the feed.
@@ -148,7 +148,7 @@ function pvd_add_mime_type_filter($post_mime_types) {
 
 function pvd_where_add_documents( $where ) {
     
-    $where = str_replace("AND wp_posts.post_type = 'post'", "AND wp_posts.post_type IN ('document', 'post')", $where);
+    $where = str_replace("AND wp_posts.post_type = 'post'", "AND wp_posts.post_type IN ('pv_document', 'post')", $where);
     
     return $where;
 }
