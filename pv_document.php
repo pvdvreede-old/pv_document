@@ -45,7 +45,7 @@ function pvd_register_document_type() {
 }
 
 function pvd_add_document_meta_box() {
-    add_meta_box('pv_document_items', 'Add Attachment', 'render_document_meta_box', 'pv_document');
+    add_meta_box('pv_document_items', 'Add Attachment', 'pvd_render_document_meta_box', 'pv_document');
 }
 
 function pvd_render_document_meta_box($post) {
