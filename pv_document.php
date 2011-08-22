@@ -148,7 +148,7 @@ function add_mime_type_filter($post_mime_types) {
 
 function where_add_documents( $where ) {
     
-    $where .= " AND post_type = 'document' ";
+    $where = str_replace("AND wp_posts.post_type = 'post'", "AND wp_posts.post_type IN ('document', 'post')", $where);
     
     return $where;
 }
