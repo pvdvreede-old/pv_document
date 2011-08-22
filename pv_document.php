@@ -75,7 +75,7 @@ function render_document_meta_box($post) {
         $output = '<p>There are no documents currently in the media library to attach.</p>';       
     }
     
-    $output .= '<p>To add documents to the library <a href="/wp-admin/media-new.php">click here</a></p>';
+    $output .= '<p>To add documents to the library <a href="/wp-admin/media-new.php">click here</a>.</p>';
     
     echo $output;
 }
