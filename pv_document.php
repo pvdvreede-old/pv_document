@@ -16,6 +16,7 @@ add_action('save_post', 'save_document_data');
 
 add_filter('the_content', 'format_content');
 add_filter('post_mime_types', 'add_mime_type_filter');
+add_filter('posts_where', 'where_add_documents' );
 
 /**
  * Function to create the document post type and its corresponding
@@ -143,6 +144,13 @@ function add_mime_type_filter($post_mime_types) {
     // TODO: Add more mime types for other doc types eg, Word, spreadsheet
 
     return $post_mime_types;
+}
+
+function where_add_documents( $where ) {
+    
+    $where .= " AND post_type = 'document' ";
+    
+    return $where;
 }
 
 function get_post_attachments($post_id = null) {
