@@ -10,19 +10,19 @@ Author URI: http://www.vdvreede.net
 License: GPL2
 */
 
-add_action('init', 'register_document_type');
-add_action('add_meta_boxes', 'add_document_meta_box');
-add_action('save_post', 'save_document_data');
+add_action('init', 'pvd_register_document_type');
+add_action('add_meta_boxes', 'pvd_add_document_meta_box');
+add_action('save_post', 'pvd_save_document_data');
 
-add_filter('the_content', 'format_content');
-add_filter('post_mime_types', 'add_mime_type_filter');
-add_filter('posts_where', 'where_add_documents' );
+add_filter('the_content', 'pvd_format_content');
+add_filter('post_mime_types', 'pvd_add_mime_type_filter');
+add_filter('posts_where', 'pvd_where_add_documents' );
 
 /**
  * Function to create the document post type and its corresponding
  * categories.
  */
-function register_document_type() {
+function pvd_register_document_type() {
 
     register_post_type('document', array(
         'labels' => array(
@@ -44,18 +44,18 @@ function register_document_type() {
     ));
 }
 
-function add_document_meta_box() {
+function pvd_add_document_meta_box() {
     add_meta_box('pv_document_items', 'Add Attachment', 'render_document_meta_box', 'document');
 }
 
-function render_document_meta_box($post) {
+function pvd_render_document_meta_box($post) {
 
     if ($post->post_type != 'document')
             return;
     
     $current_attachment = get_post_attachments($post->ID);
     
-    $attachments = get_post_attachments();
+    $attachments = pvd_get_post_attachments();
     
     if (count($attachments) > 0) {   
         // Use nonce for verification
@@ -80,7 +80,7 @@ function render_document_meta_box($post) {
     echo $output;
 }
 
-function save_document_data($post_id) {
+function pvd_save_document_data($post_id) {
 
     // verify if this is an auto save routine. 
     // If it is our form has not been submitted, so we dont want to do anything
@@ -110,7 +110,7 @@ function save_document_data($post_id) {
     wp_update_post($attachment);
 }
 
-function format_content($content) {
+function pvd_format_content($content) {
     global $post;
 
     if ($post->post_type != 'document')
@@ -120,7 +120,7 @@ function format_content($content) {
     if (!is_single())
         return $content;
 
-    $attachments = get_post_attachments($post->ID);
+    $attachments = pvd_get_post_attachments($post->ID);
 
     if (count($attachments) < 1) {
         $content .= '<p>There are no documents to download.</p>';
@@ -134,7 +134,7 @@ function format_content($content) {
     return $content;
 }
 
-function add_mime_type_filter($post_mime_types) {
+function pvd_add_mime_type_filter($post_mime_types) {
     $post_mime_types['application/pdf'] = array('PDF', 'Manage PDF', 'PDF (%s)');
     
     $post_mime_types['application/vnd.openxmlformats-officedocument.wordprocessingml.document'] = array('Word', 'Manage Word', 'Word (%s)');
@@ -146,14 +146,14 @@ function add_mime_type_filter($post_mime_types) {
     return $post_mime_types;
 }
 
-function where_add_documents( $where ) {
+function pvd_where_add_documents( $where ) {
     
     $where = str_replace("AND wp_posts.post_type = 'post'", "AND wp_posts.post_type IN ('document', 'post')", $where);
     
     return $where;
 }
 
-function get_post_attachments($post_id = null) {
+function pvd_get_post_attachments($post_id = null) {
     $args = array(
         'post_type' => 'attachment',
         'numberposts' => -1,
