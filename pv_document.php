@@ -96,7 +96,11 @@ function pvd_save_document_data($post_id) {
 
     if (!current_user_can('edit_post', $post_id))
         return;
-
+    
+    // make sure the document is being submitted, in case there arent any.
+    if (!isset($_POST['pv_document_attachment']))
+        return;
+    
     $attachment_id = $_POST['pv_document_attachment'];
 
     // If no attachment was selected then exit and let the document save
