@@ -23,7 +23,6 @@ add_filter('posts_where', 'pvd_where_add_documents' );
  * categories.
  */
 function pvd_register_document_type() {
-
     register_post_type('pv_document', array(
         'labels' => array(
             'name' => 'Documents',
@@ -125,17 +124,49 @@ function pvd_format_content($content) {
         return $content;
 
     $attachments = pvd_get_post_attachments($post->ID);
-
-    if (count($attachments) < 1) {
-        $content .= '<p>There are no documents to download.</p>';
+    
+    $content .= '<div class="pv_document_items">';
+    
+    if (count($attachments) < 1) {      
+        $content .= '<p class="pv_document_no_items">There are no documents to download.</p>';
         return $content;
     }
 
     foreach ($attachments as $attachment) {
+        $content .= '<div class="pv_document_item">';
+        $content .= '<img src="' . pvd_get_attachment_icon_url( $attachment->post_mime_type ) . '" />';
         $content .= '<p>' . $attachment->post_name . '</p>';
+        $content .= '</div>';
     }
-
+    
+    $content .= '</div>';
+    
     return $content;
+}
+
+function pvd_get_attachment_icon_url( $mime_type ) {
+    
+    $folder_url = plugin_basename(__FILE__);
+    
+    switch ( $mime_type ) {
+        
+         case 'application/msword':
+         case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+             $image_filename = 'xxxx.png';
+             break;
+         
+         case 'application/pdf':
+             $image_filename = 'xxxx.png';
+             break;
+             
+         default:
+             $image_filename = 'xxx.png';
+             break;
+        
+    }
+    
+    return $folder_url . '/images/' . $image_filename;
+    
 }
 
 function pvd_add_mime_type_filter($post_mime_types) {
