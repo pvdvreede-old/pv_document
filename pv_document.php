@@ -150,17 +150,28 @@ function pvd_get_attachment_icon_url( $mime_type ) {
     
     switch ( $mime_type ) {
         
+         case 'application/vnd.ms-excel':
+         case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+         case 'application/vnd.openxmlformats-officedocument.spreadsheetml.template':
+             $image_filename = 'XLS8.png';
+             break;
+         
          case 'application/msword':
          case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-             $image_filename = 'xxxx.png';
+             $image_filename = 'word.png';
+             break;
+         
+         case 'application/vnd.ms-powerpoint':
+         case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+             $image_filename = 'PowerPoint.png';
              break;
          
          case 'application/pdf':
-             $image_filename = 'xxxx.png';
+             $image_filename = 'pdf.png';
              break;
              
          default:
-             $image_filename = 'xxx.png';
+             $image_filename = 'mp3.png';
              break;
         
     }
