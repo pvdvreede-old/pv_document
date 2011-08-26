@@ -193,8 +193,9 @@ function pvd_add_mime_type_filter($post_mime_types) {
 }
 
 function pvd_where_add_documents( $where ) {
+    global $wpdb;
     
-    $where = str_replace("AND wp_posts.post_type = 'post'", "AND wp_posts.post_type IN ('pv_document', 'post')", $where);
+    $where = str_replace("AND " . $wpdb->posts . ".post_type = 'post'", "AND " . $wpdb->posts . ".post_type IN ('pv_document', 'post')", $where);
     
     return $where;
 }
