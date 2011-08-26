@@ -146,8 +146,6 @@ function pvd_format_content($content) {
 
 function pvd_get_attachment_icon_url( $mime_type ) {
     
-    $folder_url = plugin_basename(__FILE__);
-    
     switch ( $mime_type ) {
         
          case 'application/vnd.ms-excel':
@@ -176,7 +174,7 @@ function pvd_get_attachment_icon_url( $mime_type ) {
         
     }
     
-    return $folder_url . '/images/' . $image_filename;
+    return plugins_url( '/images/' . $image_filename , __FILE__ );
     
 }
 
