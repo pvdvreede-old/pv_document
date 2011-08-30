@@ -134,11 +134,11 @@ function pvd_format_content($content) {
 
     foreach ($attachments as $attachment) {
         // get the filename to work out the file size.
-        $file_path = get_post_meta($attachment->ID, '_wp_attached_file', true);      
+        $file_path = '/' . get_post_meta($attachment->ID, '_wp_attached_file', true);      
         $middle_path = get_option('upload_path');
         $full_filename = ABSPATH . $middle_path . $file_path;         
         $byte_size = filesize($full_filename);
-        $kb_size = $byte_size;
+        $mb_size = ($byte_size / 1024) / 1024;
         
         
         $content .= '<div class="pv_document_item">';
@@ -146,7 +146,7 @@ function pvd_format_content($content) {
         $content .= '<img src="' . pvd_get_attachment_icon_url( $attachment->post_mime_type ) . '" />';
         $content .= '<p>' . basename($file_path) . '<br />';
         $content .= '<a href="' . wp_get_attachment_url($attachment->ID) . '">Download</a><br />';
-        $content .= 'File size: ' . $kb_size . 'KB</p>';
+        $content .= 'File size: ' . number_format($mb_size, 2) . 'MB</p>';
         $content .= '</div>';
     }
     
