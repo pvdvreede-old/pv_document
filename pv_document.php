@@ -162,25 +162,29 @@ function pvd_get_attachment_icon_url( $mime_type ) {
          case 'application/vnd.ms-excel':
          case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
          case 'application/vnd.openxmlformats-officedocument.spreadsheetml.template':
-             $image_filename = 'XLS8.png';
+             $image_filename = 'xls.png';
              break;
          
          case 'application/msword':
          case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-             $image_filename = 'word.png';
+             $image_filename = 'doc.png';
              break;
          
          case 'application/vnd.ms-powerpoint':
          case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
-             $image_filename = 'PowerPoint.png';
+             $image_filename = 'ppt.png';
              break;
          
          case 'application/pdf':
              $image_filename = 'pdf.png';
              break;
+         
+         case 'application/zip':
+             $image_filename = 'zip.png';
+             break;
              
          default:
-             $image_filename = 'mp3.png';
+             $image_filename = 'txt.png';
              break;
         
     }
