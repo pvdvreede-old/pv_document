@@ -1,13 +1,12 @@
 <?php
 
 /*
-Plugin Name: pv_Document
+Plugin Name: Document
 Plugin URI: http://www.vdvreede.net
 Description: Adds document post type to wordpress for a document library.
-Version: 0.5
+Version: 0.9
 Author: Paul Van de Vreede
 Author URI: http://www.vdvreede.net
-License: GPL2
 */
 
 add_action('init', 'pvd_register_document_type');
@@ -17,6 +16,11 @@ add_action('save_post', 'pvd_save_document_data');
 add_filter('the_content', 'pvd_format_content');
 add_filter('post_mime_types', 'pvd_add_mime_type_filter');
 add_filter('posts_where', 'pvd_where_add_documents' );
+
+add_filter('manage_edit-pv_document_columns', 'pvd_add_post_columns');
+add_action('manage_posts_custom_column', 'pvd_display_post_columns');
+
+add_action('admin_head', 'pvd_add_style_sheet');
 
 /**
  * Function to create the document post type and its corresponding
@@ -41,6 +45,10 @@ function pvd_register_document_type() {
         'taxonomies' => array('category', 'post_tag'),
         'menu_position' => 5
     ));
+}
+
+function pvd_add_style_sheet() {
+    echo "<link rel='stylesheet' type='text/css' href='". plugins_url('style.css', __FILE__)."' />";
 }
 
 function pvd_add_document_meta_box() {
@@ -153,6 +161,28 @@ function pvd_format_content($content) {
     $content .= '</div>';
     
     return $content;
+}
+
+function pvd_add_post_columns($posts_columns) {
+    
+    $posts_columns['pvd_attachment'] = 'Attachment';
+    
+    return $posts_columns;
+}
+
+function pvd_display_post_columns($column_name) {
+    global $post;
+    
+    if ($column_name == 'pvd_attachment') {
+        
+        $attachments = pvd_get_post_attachments($post->ID);
+        
+        foreach ($attachments as $attachment) {
+            echo $attachment->post_name;
+            echo '<br />';
+        }
+        
+    }
 }
 
 function pvd_get_attachment_icon_url( $mime_type ) {
