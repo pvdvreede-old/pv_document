@@ -48,7 +48,8 @@ function pvd_register_document_type() {
 }
 
 function pvd_add_style_sheet() {
-    echo "<link rel='stylesheet' type='text/css' href='". plugins_url('style.css', __FILE__)."' />";
+    if (strlen(strstr($_SERVER['REQUEST_URI'], 'wp-admin/edit.php')) && strlen(strstr($_SERVER['REQUEST_URI'], 'post_type=pv_document')))
+        echo "<link rel='stylesheet' type='text/css' href='". plugins_url('style.css', __FILE__)."' />";
 }
 
 function pvd_add_document_meta_box() {
