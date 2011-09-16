@@ -128,10 +128,6 @@ function pvd_format_content($content) {
     if ($post->post_type != 'pv_document')
         return $content;
 
-    // only render the download links on a single page view - not in the feed.
-    if (!is_single())
-        return $content;
-
     $attachments = pvd_get_post_attachments($post->ID);
     
     $content .= '<div class="pv_document_items">';
