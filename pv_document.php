@@ -147,7 +147,6 @@ function pvd_format_content($content) {
         
         
         $content .= '<div class="pv_document_item">';
-        $content .= '<hr />';
         $content .= '<img src="' . pvd_get_attachment_icon_url( $attachment->post_mime_type ) . '" />';
         $content .= '<p>' . basename($file_path) . '<br />';
         $content .= '<a href="' . wp_get_attachment_url($attachment->ID) . '">Download</a><br />';
