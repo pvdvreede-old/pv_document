@@ -82,8 +82,8 @@ function pvd_render_document_meta_box($post) {
     } else {
         $output = '<p>There are no documents currently in the media library to attach.</p>';       
     }
-    
-    $output .= '<p>To add documents to the library <a href="/wp-admin/media-new.php">click here</a>.</p>';
+    $output .= '<p>This list only contains files that are unattached. If you cannot see your files, you will need to go to its currently attached document and unattach it first.</p>';
+    $output .= '<p>To add new documents to the library <a href="/wp-admin/media-new.php">click here</a>.</p>';
     
     echo $output;
 }
@@ -254,6 +254,11 @@ function pvd_get_post_attachments($post_id = null) {
 
     if ($post_id != null)
         $args['post_parent'] = $post_id;
+    else {
+	$args['post_parent'] = 0;
+	$args['orderby'] = 'title';
+	$args['order'] = 'ASC';
+    }
 
     return get_posts($args);
 }
