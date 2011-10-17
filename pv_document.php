@@ -77,7 +77,7 @@ function pvd_render_document_meta_box($post) {
             $output .= '<option value="0">Select an attachment to link...</option>';
         } else {
             $output .= '<option value="0">Unlink current attachment</option>';
-            $output .= '<option value="' . $current_attachment[0]->ID . '" selected>' . $attachment->post_name . '</option>';            
+            $output .= '<option value="' . $current_attachment[0]->ID . '" selected>' . $current_attachment[0]->post_name . '</option>';            
         }
         
         foreach ($attachments as $attachment) {
