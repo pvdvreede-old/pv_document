@@ -48,7 +48,8 @@ function pvd_register_document_type() {
 }
 
 function pvd_add_style_sheet() {
-    if (strlen(strstr($_SERVER['REQUEST_URI'], 'wp-admin/edit.php')) && strlen(strstr($_SERVER['REQUEST_URI'], 'post_type=pv_document')))
+    if (strlen(strstr($_SERVER['REQUEST_URI'], 'wp-admin/edit.php')) &&
+        strlen(strstr($_SERVER['REQUEST_URI'], 'post_type=pv_document')))
         echo "<link rel='stylesheet' type='text/css' href='". plugins_url('style.css', __FILE__)."' />";
 }
 
@@ -70,12 +71,17 @@ function pvd_render_document_meta_box($post) {
         wp_nonce_field(plugin_basename(__FILE__), 'pv_document_noncename');
     
         $output = '<select name="pv_document_attachment">';
-        $output .= '<option value="0">Select an attachment to link...</option>';
+        
+        // if there isnt a current attachment display normal list, otherwise highlight the current and give option to unlink.
+        if (count($current_attachment) == 0) {
+            $output .= '<option value="0">Select an attachment to link...</option>';
+        } else {
+            $output .= '<option value="0">Unlink current attachment</option>';
+            $output .= '<option value="' . $current_attachment[0]->ID . '" selected>' . $attachment->post_name . '</option>';            
+        }
+        
         foreach ($attachments as $attachment) {
-            if (count($current_attachment) < 1 || $current_attachment[0]->ID != $attachment->ID)
-                $output .= '<option value="' . $attachment->ID . '">' . $attachment->post_name . '</option>';
-            else
-                $output .= '<option value="' . $attachment->ID . '" selected>' . $attachment->post_name . '</option>';
+                $output .= '<option value="' . $attachment->ID . '">' . $attachment->post_name . '</option>';          
         }
     
         $output .= '</select>';
