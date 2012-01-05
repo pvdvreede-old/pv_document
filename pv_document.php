@@ -120,12 +120,26 @@ function pvd_save_document_data($post_id) {
         return;
     
     $attachment_id = $_POST['pv_document_attachment'];
+    
+    if ($attachment_id == '0') {
+        // if the document is removing the attachment, we need to find out what the current attachment id is
+        $posts = pvd_get_post_attachments($post_id);
+        
+        foreach ($posts as $post) {
+            pvd_update_attachment_with_doc($post->ID, 0);    
+        }
+        
+        return;
+    }
+    
+    pvd_update_attachment_with_doc($attachment_id, $post_id);
+}
 
+function pvd_update_attachment_with_doc($attachment_id, $doc_id) {
     $attachment = array();
     $attachment['ID'] = $attachment_id;
-    $attachment['post_parent'] = $post_id;
- 
-    wp_update_post($attachment);
+    $attachment['post_parent'] = $doc_id;
+    wp_update_post($attachment); 
 }
 
 function pvd_format_content($content) {
@@ -261,9 +275,9 @@ function pvd_get_post_attachments($post_id = null) {
     if ($post_id != null)
         $args['post_parent'] = $post_id;
     else {
-	$args['post_parent'] = 0;
-	$args['orderby'] = 'title';
-	$args['order'] = 'ASC';
+	   $args['post_parent'] = 0;
+	   $args['orderby'] = 'title';
+	   $args['order'] = 'ASC';
     }
 
     return get_posts($args);
