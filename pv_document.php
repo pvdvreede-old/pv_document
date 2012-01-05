@@ -12,6 +12,7 @@ Author URI: http://www.vdvreede.net
 add_action('init', 'pvd_register_document_type');
 add_action('add_meta_boxes', 'pvd_add_document_meta_box');
 add_action('save_post', 'pvd_save_document_data');
+add_action('trash_post', 'pvd_delete_document_attachments');
 
 add_filter('the_content', 'pvd_format_content');
 add_filter('post_mime_types', 'pvd_add_mime_type_filter');
@@ -134,6 +135,15 @@ function pvd_save_document_data($post_id) {
         return;
     
     pvd_update_attachment_with_doc($attachment_id, $post_id);
+}
+
+function pvd_delete_document_attachments($post_id) {
+    // remove all attachments if there are any so that there are no double ups
+    $posts = pvd_get_post_attachments($post_id);
+    
+    foreach ($posts as $post) {
+        pvd_update_attachment_with_doc($post->ID, 0);    
+    }
 }
 
 function pvd_update_attachment_with_doc($attachment_id, $doc_id) {
