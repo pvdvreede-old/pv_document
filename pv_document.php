@@ -117,10 +117,6 @@ function pvd_save_document_data($post_id) {
     
     $attachment_id = $_POST['pv_document_attachment'];
 
-    // If no attachment was selected then exit and let the document save
-    if ($attachment_id == '0')
-        return;
-
     $attachment = array();
     $attachment['ID'] = $attachment_id;
     $attachment['post_parent'] = $post_id;
