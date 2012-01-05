@@ -207,7 +207,7 @@ function pvd_display_post_columns($column_name) {
         if (count($attachments) > 0) {
         
         foreach ($attachments as $attachment) {
-            echo $attachment->post_name;
+            echo pvd_get_filename_from_guid($attachment->guid);
             echo '<br />';
         }
         
