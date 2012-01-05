@@ -121,16 +121,17 @@ function pvd_save_document_data($post_id) {
     
     $attachment_id = $_POST['pv_document_attachment'];
     
-    if ($attachment_id == '0') {
-        // if the document is removing the attachment, we need to find out what the current attachment id is
-        $posts = pvd_get_post_attachments($post_id);
-        
-        foreach ($posts as $post) {
-            pvd_update_attachment_with_doc($post->ID, 0);    
-        }
-        
-        return;
+
+    // remove all attachments if there are any so that there are no double ups
+    $posts = pvd_get_post_attachments($post_id);
+    
+    foreach ($posts as $post) {
+        pvd_update_attachment_with_doc($post->ID, 0);    
     }
+    
+    // if 0 then the users wants to unlink all and not add any others, so exit
+    if ($attachment_id == '0') 
+        return;
     
     pvd_update_attachment_with_doc($attachment_id, $post_id);
 }
