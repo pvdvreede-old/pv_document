@@ -77,11 +77,11 @@ function pvd_render_document_meta_box($post) {
             $output .= '<option value="0">Select an attachment to link...</option>';
         } else {
             $output .= '<option value="0">Unlink current attachment</option>';
-            $output .= '<option value="' . $current_attachment[0]->ID . '" selected>' . $current_attachment[0]->post_name . '</option>';            
+            $output .= '<option value="' . $current_attachment[0]->ID . '" selected>' . pvd_get_filename_from_guid($current_attachment[0]->guid) . '</option>';            
         }
         
         foreach ($attachments as $attachment) {
-                $output .= '<option value="' . $attachment->ID . '">' . $attachment->post_name . '</option>';          
+                $output .= '<option value="' . $attachment->ID . '">' . pvd_get_filename_from_guid($attachment->guid) . '</option>';          
         }
     
         $output .= '</select>';
@@ -92,6 +92,10 @@ function pvd_render_document_meta_box($post) {
     $output .= '<p>To add new documents to the library <a href="/wp-admin/media-new.php">click here</a>.</p>';
     
     echo $output;
+}
+
+function pvd_get_filename_from_guid($guid) {
+	return substr($guid, strrpos($guid, '/') + 1, strlen($guid) - 1);
 }
 
 function pvd_save_document_data($post_id) {
